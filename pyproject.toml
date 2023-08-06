@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["hitchdbfixture"]
+
+[project]
+name = "hitchdbfixture"
+authors = [
+    {name = "Colm O'Connor", email = "colm.oconnor.github@gmail.com"},
+]
+description = "StrictYAML database fixtures with tbls."
+license = {file = "LICENSE.txt"}
+requires-python = ">=3.7.0"
+keywords = ["yaml", "hitchdev", "bdd", "tdd", "database", "fixtures"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Software Development :: Libraries",
+    "Natural Language :: English",
+    "Environment :: Console",
+]
+dependencies = [
+    "strictyaml>=1.4.3",
+]
+dynamic = ["version", "readme"]
+
+[project.urls]
+homepage = "https://hitchdev.com/hitchdbfixture"
+documentation = "https://hitchdev.com/hitchdbfixture/using"
+repository = "https://github.com/hitchdev/hitchdbfixture"
+changelog = "https://hitchdev.com/hitchdbfixture/changelog"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md",], content-type = "text/markdown"}
+version = {file = "VERSION"}

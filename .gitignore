@@ -1,0 +1,13 @@
+*.kate-swp
+*.pyc
+.pytest_cache
+build/
+dist/
+hitchdbfixture.egg-info/
+docs/snippets/
+docs/draft/
+docs/src/using/
+temp/
+hitch/devenv.yml
+hitchpylibrarytoolkit
+*.coverage

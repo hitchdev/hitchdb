@@ -1,0 +1,11 @@
+ipykernel
+pip
+q
+pudb
+psutil
+sure
+ensure
+web-pdb
+pytest
+click
+pytest

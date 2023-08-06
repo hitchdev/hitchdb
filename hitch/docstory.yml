@@ -1,0 +1,147 @@
+story: |
+  {% if include_title -%}
+  ---
+  title: {{ name }}
+  ---
+  {% if "status" in info %}
+  {{ info["status"].documentation() }}
+  {% endif %}
+  {% endif %}
+
+  {{ about }}
+
+  # Code Example
+
+  {% for name, property in given.items() %}
+  {{ property.documentation() }}
+  {% endfor %}
+
+  {% if variations %}
+  {% for variation in variations %}
+  {{ variation.documentation() }}
+  {% endfor %}
+
+  {% else %}
+
+  {% for step in steps %}
+  {{ step.documentation() }}
+  {% endfor %}
+
+  {% endif %}
+
+  {% if include_title %}
+
+  !!! note "Executable specification"
+
+      Documentation automatically generated from 
+      <a href="https://github.com/hitchdev/hitchstory/blob/master/hitch/story/{{ filename.name }}">{{ filename.name }}
+      storytests.</a>
+
+  {% endif %}
+info:
+  status: |
+    {% if status == "experimental" %}{% raw %}
+    !!! warning "Experimental"
+
+        This feature is in alpha. The API may change on a minor version increment.
+    {% endraw %}{% endif %}
+given:
+  files: |
+    {% for filename, contents in files.items() %}
+    {{ filename }}:
+
+    ```{% if filename.endswith("py") %}python{% else %}yaml{% endif %}
+    {{ contents }}```
+    {%- endfor %}
+  setup: |
+    With code:
+
+    ```python
+    {{ setup }}
+    ```
+variation: |
+  ## {{ name }}
+  
+  {{ about }}
+  
+  {% for name, property in given.child.items() %}
+  {{ property.documentation() }}
+  {% endfor %}
+
+  {% for step in steps %}
+  {{ step.documentation() }}
+  {% endfor %}
+steps:
+  file was created with: |
+    File {{ filename }} should now contain:
+
+    ```
+    {{ contents }}
+    ```
+  example story unchanged: Then the example story will be unchanged.
+  
+  file contents will be: |
+    File {{ filename }} should now contain:
+    
+    ```
+    {{ contents }}
+    ```
+  
+  output is: |
+    The code will output:
+    ```
+    {{ expected_contents }}
+    ```
+  
+  tear down was run: Then teardown is run.
+
+  form filled: |
+    Then the form is filled with:
+    
+    {% for name, value in kwargs.items() %}
+    * {{ name }}: {{ value }}
+    {% endfor %}
+
+  run: |
+    {%- if in_interpreter %}
+    ```python
+    {% for line in code.rstrip('\n').split('\n') %}>>> {{ line }}
+    {% endfor -%}
+    {{ will_output }}
+    ```
+    {% else %}
+    ```python
+    {{ code }}
+    ```
+    {% if will_output %}
+    Will output:
+    ```
+    {{ will_output }}
+    ```
+    {% if raises %}
+    ```python
+    {% if 'in python 3' in raises['type'] -%}
+    {{ raises['type']['in python 3'] }}:
+    {%- else %}{{ raises['type'] }}:{% endif -%}
+    
+    {%- if 'in python 3' in raises['message'] -%}
+    {{ raises['message']['in python 3']  }}:
+    ```
+    {% else %}
+    {{ raises['message'] }}
+    ```
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
+  pytest: |
+    `{% if env %}{% for key, value in env.items() %}{{ key }}={{ value }} {% endfor %}{% endif %}pytest {{ args }}`
+    
+    Outputs:
+    ```
+    {{ will_output }}
+    ```
+
+  run python: |
+    
