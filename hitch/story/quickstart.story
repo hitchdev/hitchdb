@@ -4,7 +4,7 @@ Quickstart:
   given:
     postgres: |
       CREATE TABLE users (
-        id integer,
+        id integer primary key,
         name varchar(50)
       );
     files:
@@ -26,7 +26,7 @@ Quickstart:
               {
                 "name": "id",
                 "type": "integer",
-                "nullable": true,
+                "nullable": false,
                 "default": null,
                 "comment": ""
               },
@@ -38,8 +38,31 @@ Quickstart:
                 "comment": ""
               }
             ],
-            "indexes": [],
-            "constraints": [],
+            "indexes": [
+              {
+                "name": "users_pkey",
+                "def": "CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)",
+                "table": "public.users",
+                "columns": [
+                  "id"
+                ],
+                "comment": ""
+              }
+            ],
+            "constraints": [
+              {
+                "name": "users_pkey",
+                "type": "PRIMARY KEY",
+                "def": "PRIMARY KEY (id)",
+                "table": "public.users",
+                "referenced_table": "",
+                "columns": [
+                  "id"
+                ],
+                "referenced_columns": [],
+                "comment": ""
+              }
+            ],
             "triggers": [],
             "def": ""
           }

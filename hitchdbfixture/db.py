@@ -1,5 +1,6 @@
 from pathlib import Path
-from strictyaml import load
+from .tbls import TBLSConfig
+from strictyaml import load, Map, Str, Optional, Int
 import json
 
 
@@ -19,12 +20,10 @@ class HitchDb:
     def sql(self):
         tbls_json = json.loads(self._tbls_json_path.read_text())
         assert tbls_json["driver"]["name"] == "postgres"
-        tbls_tables = tbls_json["tables"]
-
-        tbl_dict = {
-            tbl["name"].replace("public.", ""): tbl["columns"]
-            for tbl in tbls_tables
-        }
+        
+        tbls_config = TBLSConfig(tbls_json)
+        
         fixture = load(self._fixture_path.read_text())
+        assert tbls_config.strictyaml_schema()
         #return json.dumps(tbl_dict, indent=4)
         return "x"
