@@ -1,9 +1,9 @@
 from hitchstory import StoryCollection, BaseEngine, validate, Failure
 from hitchstory import GivenDefinition, GivenProperty, InfoDefinition, InfoProperty
 from strictyaml import EmptyDict, Str, Map, Optional, Enum, MapPattern, Bool
-from hitchstory import no_stacktrace_for, strings_match
+from hitchstory import no_stacktrace_for, strings_match, json_match
 from hitchrunpy import ExamplePythonCode, HitchRunPyException
-from commandlib import Command, python
+from commandlib import Command, python, python_bin
 from commandlib.exceptions import CommandExitError
 from path import Path
 import colorama
@@ -21,13 +21,13 @@ def wait_for_port(port_number: int):
     start_time = time.time()
     while not connected:
         try:
-            connector.connect(("localhost", 3605))
+            connector.connect(("localhost", port_number))
             time.sleep(0.05)
             connected = True
         except OSError:
             pass
         
-        if time.time() - start_time > 2.0:
+        if time.time() - start_time > 4.0:
             break
     if not connected:
         raise Failure(f"Port {port_number} never opened.")
@@ -37,6 +37,8 @@ class Engine(BaseEngine):
     """Python engine for running tests."""
 
     given_definition = GivenDefinition(
+        postgres=GivenProperty(Str()),
+        fixture_yml=GivenProperty(Str()),
         files=GivenProperty(
             MapPattern(Str(), Str()),
             inherit_via=GivenProperty.OVERRIDE,
@@ -59,6 +61,7 @@ class Engine(BaseEngine):
         self._python_path = python_path
         self._cprofile = cprofile
         self._timeout = timeout
+        self._podman_compose = python_bin.podman_compose
         self._podman = Command("podman")
 
     def set_up(self):
@@ -67,8 +70,19 @@ class Engine(BaseEngine):
         self.path.state = self.path.gen.joinpath("state")
         self.path.working = self.path.state / "working"
         self.path.website = self.path.gen / "website"
+        self.path.tbls = self.path.gen / "tbls"
 
-        self._podman("run", "-d", "playwright").output()
+        self._podman_compose(
+            "up", "-d", "postgres"
+        ).in_dir(self.path.project).output()
+        
+        wait_for_port(5432)
+
+        self._podman_compose(
+            "exec", "postgres",
+            "psql", "-U", "postgres_user", "postgres_db",
+            "-c", self.given["postgres"]
+        ).output()
 
         if self.path.q.exists():
             self.path.q.remove()
@@ -76,32 +90,33 @@ class Engine(BaseEngine):
             self.path.state.rmtree(ignore_errors=True)
         self.path.state.mkdir()
         
-        if self.path.website.exists():
-            self.path.website.rmtree(ignore_errors=True)
-        
         self._included_files = []
         
-        shutil.copytree(self.path.key / "htmltemplate", self.path.website)
-        
-        for filename, contents in list(self.given.get("html", {}).items()):
-            self.path.website.joinpath(filename).write_text(
-                jinja2.Environment(
-                    loader=jinja2.FileSystemLoader(searchpath=self.path.website)
-                ).get_template("base.html").render(content=contents)
-            )
-        
-        self._webserver = python(
-            "-m", "http.server", "8001"
-        ).in_dir(self.path.website).interact().run()
-
         for filename, contents in list(self.given.get("files", {}).items()):
             self.path.state.joinpath(filename).write_text(self.given["files"][filename])
             self._included_files.append(self.path.state.joinpath(filename))
 
-        wait_for_port(3605)
-        wait_for_port(8001)
 
         self.python = Command(self._python_path)
+    
+    def sql(self, on, cmd, will_output):
+        pass
+
+    def run_tbls(self, will_output):
+        actual_output = self._podman(
+            "run", "-v", "{}:/work".format(self.path.tbls), "--rm", "-t", "ghcr.io/k1low/tbls",
+            "out", "-t", "json", 
+            "postgres://postgres_user:postgres_password@localhost:5432/postgres_db?sslmode=disable",
+        ).output()
+
+        try:
+            json_match(will_output, actual_output)
+        except Failure:
+            if self._rewrite:
+                self.current_step.rewrite("will_output").to(actual_output)
+            else:
+                raise
+        
 
     @no_stacktrace_for(AssertionError)
     @no_stacktrace_for(HitchRunPyException)
@@ -159,9 +174,6 @@ class Engine(BaseEngine):
                     raise
 
     def tear_down(self):
-        if hasattr(self, "_podman"):
-            self._podman("stop", "-t", "1", "--latest").output()
-        if hasattr(self, "_webserver"):
-            self._webserver.kill()
+        self._podman_compose("down", "-t", "1").output()
         if self.path.q.exists():
             print(self.path.q.text())

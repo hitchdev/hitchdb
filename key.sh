@@ -67,17 +67,16 @@ case "$1" in
                 hitchrun "/gen/venv/bin/pip install setuptools-rust"
                 hitchrun "/gen/venv/bin/pip install -r /src/hitch/hitchreqs.txt"
                 hitchrun "/gen/venv/bin/python hitch/key.py build"
-                hitchrun "podman build -f hitch/Dockerfile-playwright -t playwright"
+                hitchrun "podman pull ghcr.io/k1low/tbls"
+                hitchrun "podman pull docker.io/library/postgres:13.0-alpine"
                 ;;
             "gen")
                 hitchrun "virtualenv --python=python3 /gen/venv"
                 hitchrun "/gen/venv/bin/pip install setuptools-rust"
                 hitchrun "/gen/venv/bin/pip install -r /src/hitch/hitchreqs.txt"
                 hitchrun "/gen/venv/bin/python hitch/key.py build"
-                hitchrun "podman build -f hitch/Dockerfile-playwright -t playwright"
-                ;;
-            "playwright")
-                hitchrun "podman build -f hitch/Dockerfile-playwright -t playwright"
+                hitchrun "podman pull ghcr.io/k1low/tbls"
+                hitchrun "podman pull docker.io/library/postgres:13.0-alpine"
                 ;;
             "pylibrarytoolkit")
                 hitchrun "/gen/venv/bin/pip uninstall hitchpylibrarytoolkit -y"

@@ -1,0 +1,25 @@
+version: '3.8'
+
+# !!! WARNING !!!
+
+# ALWAYS ADD network_mode: host to ALL NEW SERVICES
+# ALWAYS add docker.io/ to the beginning of any images.
+# ALWAYS add a healthcheck
+# Otherwise, you can mostly use it like you would any docker-compose.yml.
+
+services:
+  postgres:
+    network_mode: host
+    # speeds up tests: https://www.endpointdev.com/blog/2012/06/speeding-up-integration-tests-postgresql/
+    command: -c fsync=off -c synchronous_commit=off -c full_page_writes=off 
+    image: docker.io/postgres:13.0-alpine
+    stop_signal: SIGINT
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_DB=postgres_db
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 2s
+      timeout: 4s
+      retries: 2

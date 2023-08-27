@@ -130,6 +130,8 @@ pkginfo==1.9.6
     # via twine
 platformdirs==3.2.0
     # via black
+podman-compose==1.0.6
+    # via -r hitch/hitchreqs.in
 prettystack==0.4.0
     # via
     #   hitchrunpy
@@ -163,10 +165,14 @@ pyte==0.8.1
     # via icommandlib
 python-dateutil==2.8.2
     # via strictyaml
+python-dotenv==1.0.0
+    # via podman-compose
 python-slugify==8.0.1
     # via
     #   hitchbuild
     #   hitchstory
+pyyaml==6.0.1
+    # via podman-compose
 q==2.7
     # via hitchpylibrarytoolkit
 readme-renderer==37.3
