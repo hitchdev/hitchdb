@@ -69,7 +69,7 @@ Quickstart:
         from path import Path
 
         fixture = HitchDb(
-            schema="tbls.json",
+            tbls_json_path="tbls.json",
             fixture="fixture.yml",
         )
         print(fixture.sql())
