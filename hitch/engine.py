@@ -38,7 +38,6 @@ class Engine(BaseEngine):
 
     given_definition = GivenDefinition(
         postgres=GivenProperty(Str()),
-        fixture_yml=GivenProperty(Str()),
         files=GivenProperty(
             MapPattern(Str(), Str()),
             inherit_via=GivenProperty.OVERRIDE,
@@ -116,6 +115,9 @@ class Engine(BaseEngine):
                 self.current_step.rewrite("will_output").to(actual_output)
             else:
                 raise
+        
+        self.path.state.joinpath("tbls.json").write_text(actual_output)
+        self._included_files.append(self.path.state.joinpath("tbls.json"))
         
 
     @no_stacktrace_for(AssertionError)

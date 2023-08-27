@@ -7,10 +7,11 @@ Quickstart:
         id integer,
         name varchar(50)
       );
-    fixture.yml: |
-      users:
-        10:
-          name: Thomas
+    files:
+      fixture.yml: |
+        users:
+          10:
+            name: Thomas
   steps:
   - Run tbls: |
       {
@@ -62,16 +63,20 @@ Quickstart:
       }
 
 
-    #- Run:
-        #code: |
-          #from hitchdbfixture import HitchDbFixture
-          #fixture = HitchDbFixture(
-              #schema="tbls.json",
-              #fixture="fixture.yml",
-          #)
-          #print(fixture.sql())
-        #will output: x
-    #- SQL:
-        #on: postgres
-        #cmd: select * from users;
-        #will output: x
+  - Run:
+      code: |
+        #from hitchdbfixture import HitchDbFixture
+        from path import Path
+        
+        print(Path("tbls.json").read_text())
+        print(Path("fixture.yml").read_text())
+        #fixture = HitchDbFixture(
+            #schema="tbls.json",
+            #fixture="fixture.yml",
+        #)
+        #print(fixture.sql())
+      will output: x
+  #- SQL:
+      #on: postgres
+      #cmd: select * from users;
+      #will output: x
