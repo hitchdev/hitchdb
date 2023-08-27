@@ -65,17 +65,16 @@ Quickstart:
 
   - Run:
       code: |
-        #from hitchdbfixture import HitchDbFixture
+        from hitchdbfixture import HitchDb
         from path import Path
-        
-        print(Path("tbls.json").read_text())
-        print(Path("fixture.yml").read_text())
-        #fixture = HitchDbFixture(
-            #schema="tbls.json",
-            #fixture="fixture.yml",
-        #)
-        #print(fixture.sql())
+
+        fixture = HitchDb(
+            schema="tbls.json",
+            fixture="fixture.yml",
+        )
+        print(fixture.sql())
       will output: x
+
   #- SQL:
       #on: postgres
       #cmd: select * from users;
