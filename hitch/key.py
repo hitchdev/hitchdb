@@ -6,9 +6,9 @@ from engine import Engine
 
 
 toolkit = hitchpylibrarytoolkit.ProjectToolkitV2(
-    "HitchDBFixture",
-    "hitchdbfixture",
-    "hitchdev/hitchdbfixture",
+    "HitchDB",
+    "hitchdb",
+    "hitchdev/hitchdb",
     image="",
 )
 
@@ -165,7 +165,7 @@ def envirotest(strategy_name):
 
     test_package = pyenv.PythonRequirements(
         [
-            "hitchdbfixture=={}".format(_current_version()),
+            "hitchdb=={}".format(_current_version()),
         ],
         test_repo=True,
     )

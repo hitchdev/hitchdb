@@ -90,7 +90,7 @@ Quickstart:
 
   - Run:
       code: |
-        from hitchdbfixture import HitchDb
+        from hitchdb import HitchDb
         from path import Path
 
         fixture = HitchDb(

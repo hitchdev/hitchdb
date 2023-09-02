@@ -3,10 +3,10 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["hitchdbfixture"]
+packages = ["hitchdb"]
 
 [project]
-name = "hitchdbfixture"
+name = "hitchdb"
 authors = [
     {name = "Colm O'Connor", email = "colm.oconnor.github@gmail.com"},
 ]
@@ -29,10 +29,10 @@ dependencies = [
 dynamic = ["version", "readme"]
 
 [project.urls]
-homepage = "https://hitchdev.com/hitchdbfixture"
-documentation = "https://hitchdev.com/hitchdbfixture/using"
-repository = "https://github.com/hitchdev/hitchdbfixture"
-changelog = "https://hitchdev.com/hitchdbfixture/changelog"
+homepage = "https://hitchdev.com/hitchdb"
+documentation = "https://hitchdev.com/hitchdb/using"
+repository = "https://github.com/hitchdev/hitchdb"
+changelog = "https://hitchdev.com/hitchdb/changelog"
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.md",], content-type = "text/markdown"}

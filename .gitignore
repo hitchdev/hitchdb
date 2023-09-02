@@ -3,7 +3,7 @@
 .pytest_cache
 build/
 dist/
-hitchdbfixture.egg-info/
+hitchdb.egg-info/
 docs/snippets/
 docs/draft/
 docs/src/using/

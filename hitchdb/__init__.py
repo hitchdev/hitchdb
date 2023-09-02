@@ -1,4 +1,4 @@
-from hitchdbfixture.db import HitchDb
+from hitchdb.db import HitchDb
 
 
 __version__ = "DEVELOPMENT_VERSION"
