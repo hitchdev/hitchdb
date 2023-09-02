@@ -12,6 +12,8 @@ Quickstart:
         users:
           10:
             name: Thomas
+          11:
+            name: Jane
   steps:
   - Run tbls: |
       {
@@ -95,10 +97,29 @@ Quickstart:
             tbls_json_path="tbls.json",
             fixture="fixture.yml",
         )
-        print(fixture.sql())
-      will output: x
+        sql = fixture.sql()
+        print(sql)
+        Path("fixture.sql").write_text(sql)
+      will output: |-
+        INSERT INTO users (id, name)                                                                                                                                    
+        VALUES                                                                                                                                                          
+            (10,'Thomas'),                                                                                                                                              
+            (11,'Jane');
 
-  #- SQL:
-      #on: postgres
-      #cmd: select * from users;
-      #will output: x
+  - run sql file:
+      filename: fixture.sql
+
+  - sql:
+      cmd: select * from users;
+      will output: |
+        podman-compose version: 1.0.6
+        ['podman', '--version', '']
+        using podman version: 4.4.4
+        podman exec --interactive --tty --env POSTGRES_USER=postgres_user --env POSTGRES_PASSWORD=postgres_password --env POSTGRES_DB=postgres_db src_postgres_1 psql -U postgres_user postgres_db -c select * from users;
+         id |  name
+        ----+--------
+         10 | Thomas
+         11 | Jane
+        (2 rows)
+
+        exit code: 0

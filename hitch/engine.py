@@ -98,8 +98,22 @@ class Engine(BaseEngine):
 
         self.python = Command(self._python_path)
     
-    def sql(self, on, cmd, will_output):
-        pass
+    def sql(self, cmd, will_output):
+        cmd_output = self._podman_compose(
+            "exec", "postgres",
+            "psql", "-U", "postgres_user", "postgres_db",
+            "-c", cmd
+        ).output()
+
+        actual_output = "\n".join([line.rstrip() for line in cmd_output.split("\n")])
+
+        try:
+            strings_match(will_output, actual_output)
+        except Failure:
+            if self._rewrite:
+                self.current_step.rewrite("will_output").to(actual_output)
+            else:
+                raise
 
     def run_tbls(self, will_output):
         actual_output = self._podman(
@@ -118,7 +132,15 @@ class Engine(BaseEngine):
         
         self.path.state.joinpath("tbls.json").write_text(actual_output)
         self._included_files.append(self.path.state.joinpath("tbls.json"))
-        
+    
+    @no_stacktrace_for(CommandExitError)
+    def run_sql_file(self, filename):
+        sql = self.path.gen.joinpath("state", "working", filename).read_text()
+        self._podman_compose(
+            "exec", "postgres",
+            "psql", "-U", "postgres_user", "postgres_db",
+            "-c", sql
+        ).output()
 
     @no_stacktrace_for(AssertionError)
     @no_stacktrace_for(HitchRunPyException)
