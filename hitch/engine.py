@@ -71,6 +71,9 @@ class Engine(BaseEngine):
         self.path.website = self.path.gen / "website"
         self.path.tbls = self.path.gen / "tbls"
 
+        shutil.rmtree(self.path.tbls, ignore_errors=True)
+        self.path.tbls.mkdir()
+
         self._podman_compose(
             "up", "-d", "postgres"
         ).in_dir(self.path.project).output()
