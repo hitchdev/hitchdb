@@ -5,15 +5,25 @@ Quickstart:
     postgres: |
       CREATE TABLE users (
         id integer primary key,
-        name varchar(50)
+        firstname varchar(50),
+        lastname varchar(50),
+        score int,
+        age int
       );
     files:
       fixture.yml: |
         users:
           10:
-            name: Thomas
+            firstname: Thomas
+            lastname: Beecham
+            age: 18
+            score: 99
           11:
-            name: Jane
+            age: 19
+            firstname: Jane
+            lastname: Beecham
+            score: 55
+            
   steps:
   - Run tbls: |
       {
@@ -33,8 +43,29 @@ Quickstart:
                 "comment": ""
               },
               {
-                "name": "name",
+                "name": "firstname",
                 "type": "varchar(50)",
+                "nullable": true,
+                "default": null,
+                "comment": ""
+              },
+              {
+                "name": "lastname",
+                "type": "varchar(50)",
+                "nullable": true,
+                "default": null,
+                "comment": ""
+              },
+              {
+                "name": "score",
+                "type": "integer",
+                "nullable": true,
+                "default": null,
+                "comment": ""
+              },
+              {
+                "name": "age",
+                "type": "integer",
                 "nullable": true,
                 "default": null,
                 "comment": ""
@@ -101,10 +132,10 @@ Quickstart:
         print(sql)
         Path("fixture.sql").write_text(sql)
       will output: |-
-        INSERT INTO users (id, name)                                                                                                                                    
+        INSERT INTO users (id, firstname, lastname, score, age)                                                                                                         
         VALUES                                                                                                                                                          
-            (10,'Thomas'),                                                                                                                                              
-            (11,'Jane');
+            (10,'Thomas','Beecham',99,18),                                                                                                                              
+            (11,'Jane','Beecham',55,19);
 
   - run sql file:
       filename: fixture.sql
@@ -116,10 +147,10 @@ Quickstart:
         ['podman', '--version', '']
         using podman version: 4.4.4
         podman exec --interactive --tty --env POSTGRES_USER=postgres_user --env POSTGRES_PASSWORD=postgres_password --env POSTGRES_DB=postgres_db src_postgres_1 psql -U postgres_user postgres_db -c select * from users;
-         id |  name
-        ----+--------
-         10 | Thomas
-         11 | Jane
+         id | firstname | lastname | score | age
+        ----+-----------+----------+-------+-----
+         10 | Thomas    | Beecham  |    99 |  18
+         11 | Jane      | Beecham  |    55 |  19
         (2 rows)
 
         exit code: 0
