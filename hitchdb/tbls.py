@@ -1,4 +1,4 @@
-from strictyaml import Map, MapPattern, Int, Str
+from strictyaml import Map, MapPattern, Int, Str, Optional
 
 
 class PrimaryKey:
@@ -87,5 +87,5 @@ class TBLSConfig:
 
     def strictyaml_schema(self):
         return Map(
-            {name: tbl.strictyaml_schema() for name, tbl in self._tbl_dict.items()}
+            {Optional(name): tbl.strictyaml_schema() for name, tbl in self._tbl_dict.items()}
         )
