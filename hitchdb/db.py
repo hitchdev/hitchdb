@@ -1,7 +1,7 @@
+from hitchdb.tbls import TBLSConfig
 from pathlib import Path
-from .tbls import TBLSConfig
-from strictyaml import load
 import json
+
 
 INSERT_INTO = """
 
@@ -14,8 +14,19 @@ VALUES
 """
 
 
+def sqlformat(scalar):
+    if isinstance(scalar, str):
+        return f"'{scalar}'"
+    elif isinstance(scalar, int):
+        return str(scalar)
+    elif isinstance(scalar, bool):
+        return "true" if scalar else "false"
+    else:
+        raise NotImplementedError("Unknown type")
+
+
 def formatted(data_list):
-    return [f"'{x}'" if isinstance(x, str) else str(x) for x in data_list]
+    return [sqlformat(x) for x in data_list]
 
 
 class Fixture:
@@ -30,11 +41,11 @@ class Fixture:
 
         for pk, data in items[:-1]:
             row_list = formatted(tbl.row_list(data))
-            sql_text += "(" + str(pk) + "," + ",".join(row_list) + "),\n    "
+            sql_text += "(" + str(pk) + ", " + ", ".join(row_list) + "),\n    "
 
         pk, data = items[-1]
         row_list = formatted(tbl.row_list(data))
-        sql_text += "(" + str(pk) + "," + ",".join(row_list) + ");\n"
+        sql_text += "(" + str(pk) + ", " + ", ".join(row_list) + ");\n"
 
         return sql_text
 
@@ -53,21 +64,25 @@ class Fixture:
 
 
 class HitchDb:
-    def __init__(self, tbls_json_path: Path, fixture: Path):
+    def __init__(self, tbls_json_path: Path):
         self._tbls_json_path = Path(tbls_json_path)
-        self._fixture_path = Path(fixture)
 
         assert self._tbls_json_path.exists()
-        assert self._fixture_path.exists()
-
-    def sql(self):
         tbls_json = json.loads(self._tbls_json_path.read_text())
-        assert tbls_json["driver"]["name"] == "postgres"
+        assert tbls_json["driver"]["name"] == "postgres", (
+            "HitchDb currently only works for postgres.\n"
+            "Raise a ticket for mysql/mariadb/"
+            "microsoft sql server/sqllite/bigquery/redshift/dynamodb"
+        )
 
-        tbls_config = TBLSConfig(tbls_json)
+        self._tbls_config = TBLSConfig(tbls_json)
 
-        fixture_dict = load(
-            self._fixture_path.read_text(), tbls_config.strictyaml_schema()
-        ).data
-        fixture = Fixture(fixture_dict, tbls_config)
-        return fixture.sql()
+    def strictyaml_schema(self):
+        return self._tbls_config.strictyaml_schema()
+
+    def fixture(self, data: dict):
+        assert isinstance(data, dict)
+        return Fixture(
+            data,
+            self._tbls_config,
+        )

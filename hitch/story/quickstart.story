@@ -8,6 +8,7 @@ Quickstart:
         firstname varchar(50),
         lastname varchar(50),
         score int,
+        available bool,
         age int
       );
     files:
@@ -18,9 +19,11 @@ Quickstart:
             lastname: Beecham
             age: 18
             score: 99
+            available: yes
           11:
             age: 19
             firstname: Jane
+            available: no
             lastname: Beecham
             score: 55
             
@@ -59,6 +62,13 @@ Quickstart:
               {
                 "name": "score",
                 "type": "integer",
+                "nullable": true,
+                "default": null,
+                "comment": ""
+              },
+              {
+                "name": "available",
+                "type": "boolean",
                 "nullable": true,
                 "default": null,
                 "comment": ""
@@ -122,20 +132,26 @@ Quickstart:
   - Run:
       code: |
         from hitchdb import HitchDb
+        from strictyaml import load
         from path import Path
 
-        fixture = HitchDb(
-            tbls_json_path="tbls.json",
-            fixture="fixture.yml",
+        hitch_db = HitchDb("tbls.json")
+
+        fixture = hitch_db.fixture(
+            load(
+                Path("fixture.yml").read_text(),
+                hitch_db.strictyaml_schema(),
+            ).data
         )
+
         sql = fixture.sql()
         print(sql)
         Path("fixture.sql").write_text(sql)
       will output: |-
-        INSERT INTO users (id, firstname, lastname, score, age)                                                                                                         
+        INSERT INTO users (id, firstname, lastname, score, available, age)                                                                                              
         VALUES                                                                                                                                                          
-            (10,'Thomas','Beecham',99,18),                                                                                                                              
-            (11,'Jane','Beecham',55,19);
+            (10, 'Thomas', 'Beecham', 99, True, 18),                                                                                                                    
+            (11, 'Jane', 'Beecham', 55, False, 19);
 
   - run sql file:
       filename: fixture.sql
@@ -147,10 +163,10 @@ Quickstart:
         ['podman', '--version', '']
         using podman version: 4.4.4
         podman exec --interactive --tty --env POSTGRES_USER=postgres_user --env POSTGRES_PASSWORD=postgres_password --env POSTGRES_DB=postgres_db src_postgres_1 psql -U postgres_user postgres_db -c select * from users;
-         id | firstname | lastname | score | age
-        ----+-----------+----------+-------+-----
-         10 | Thomas    | Beecham  |    99 |  18
-         11 | Jane      | Beecham  |    55 |  19
+         id | firstname | lastname | score | available | age
+        ----+-----------+----------+-------+-----------+-----
+         10 | Thomas    | Beecham  |    99 | t         |  18
+         11 | Jane      | Beecham  |    55 | f         |  19
         (2 rows)
 
         exit code: 0

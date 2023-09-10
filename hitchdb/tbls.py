@@ -1,4 +1,4 @@
-from strictyaml import Map, MapPattern, Int, Str, Optional
+from strictyaml import Map, MapPattern, Int, Bool, Str, Optional
 
 
 class PrimaryKey:
@@ -50,6 +50,8 @@ class Table:
             return Str()
         elif column["type"] == "integer":
             return Int()
+        elif column["type"] == "boolean":
+            return Bool()
         else:
             raise NotImplementedError()
 
