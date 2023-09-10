@@ -26,4 +26,6 @@ jobs:
 
       - name: regression
         run: |
+          ./key.sh lint
+          ./key.sh doctests
           ./key.sh regression
