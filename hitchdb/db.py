@@ -1,6 +1,6 @@
 from pathlib import Path
 from .tbls import TBLSConfig
-from strictyaml import load, Map, Str, Optional, Int
+from strictyaml import load
 import json
 
 INSERT_INTO = """
