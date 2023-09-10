@@ -87,5 +87,8 @@ class TBLSConfig:
 
     def strictyaml_schema(self):
         return Map(
-            {Optional(name): tbl.strictyaml_schema() for name, tbl in self._tbl_dict.items()}
+            {
+                Optional(name): tbl.strictyaml_schema()
+                for name, tbl in self._tbl_dict.items()
+            }
         )

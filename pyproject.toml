@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "strictyaml>=1.4.3",
+    "python-slugify>=1.2.1",
 ]
 dynamic = ["version", "readme"]
 

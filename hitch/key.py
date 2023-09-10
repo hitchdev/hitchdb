@@ -116,6 +116,18 @@ def lint():
 
 
 @cli.command()
+def doctests():
+    """
+    Run doctests in utils.py in latest version.
+    """
+    from commandlib import Command
+
+    Command(_devenv().python_path)(
+        "-m", "doctest", "-v", DIR.project.joinpath("hitchdb", "utils.py")
+    ).in_dir(DIR.project.joinpath("hitchdb")).run()
+
+
+@cli.command()
 @argument("test", required=False)
 def deploy(test="test"):
     """
