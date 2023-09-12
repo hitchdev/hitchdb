@@ -1,10 +1,10 @@
-from strictyaml import Map, MapPattern, Int, Bool, Str, Optional
+from strictyaml import Map, MapPattern, Int, Bool, Str, Float, Optional
 
 
 class PrimaryKey:
     def __init__(self, column_name, column_type):
         self.column_name = column_name
-        self.column_type = column_type
+        self.column_type = column_type 
 
 
 class Table:
@@ -48,12 +48,20 @@ class Table:
     def _column_schema(self, column):
         if column["type"].startswith("varchar"):
             return Str()
-        elif column["type"] == "integer":
+        elif column["type"] in ("text", "uuid", "inet", "jsonb"):
+            return Str()
+        elif column["type"] in ("double precision"):
+            return Float()
+        elif column["type"].startswith("numeric"):
+            return Float()
+        elif column["type"] in ("integer", "bigint", "smallint"):
             return Int()
         elif column["type"] == "boolean":
             return Bool()
+        elif column["type"] in ("timestamp with time zone", "date", "interval"):
+            return Str()
         else:
-            raise NotImplementedError()
+            raise NotImplementedError(column["type"])
 
     def column_schemas(self):
         return Map(

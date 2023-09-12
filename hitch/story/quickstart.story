@@ -3,7 +3,7 @@ Quickstart:
   about: x
   given:
     postgres: |
-      CREATE TABLE users (
+      CREATE TABLE core_users (
         id integer primary key,
         firstname varchar(50),
         lastname varchar(50),
@@ -13,7 +13,7 @@ Quickstart:
       );
     files:
       fixture.yml: |
-        users:
+        core_users:
           10:
             firstname: Thomas
             lastname: Beecham
@@ -34,7 +34,7 @@ Quickstart:
         "desc": "",
         "tables": [
           {
-            "name": "public.users",
+            "name": "public.core_users",
             "type": "BASE TABLE",
             "comment": "",
             "columns": [
@@ -83,9 +83,9 @@ Quickstart:
             ],
             "indexes": [
               {
-                "name": "users_pkey",
-                "def": "CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)",
-                "table": "public.users",
+                "name": "core_users_pkey",
+                "def": "CREATE UNIQUE INDEX core_users_pkey ON public.core_users USING btree (id)",
+                "table": "public.core_users",
                 "columns": [
                   "id"
                 ],
@@ -94,10 +94,10 @@ Quickstart:
             ],
             "constraints": [
               {
-                "name": "users_pkey",
+                "name": "core_users_pkey",
                 "type": "PRIMARY KEY",
                 "def": "PRIMARY KEY (id)",
-                "table": "public.users",
+                "table": "public.core_users",
                 "referenced_table": "",
                 "columns": [
                   "id"
@@ -148,21 +148,21 @@ Quickstart:
         print(sql)
         Path("fixture.sql").write_text(sql)
       will output: |-
-        INSERT INTO users (id, firstname, lastname, score, available, age)                                                                                              
+        INSERT INTO core_users (id, firstname, lastname, score, available, age)                                                                                         
         VALUES                                                                                                                                                          
-            (10, 'Thomas', 'Beecham', 99, True, 18),                                                                                                                    
-            (11, 'Jane', 'Beecham', 55, False, 19);
+            (10, 'Thomas', 'Beecham', 99, true, 18),                                                                                                                    
+            (11, 'Jane', 'Beecham', 55, false, 19);
 
   - run sql file:
       filename: fixture.sql
 
   - sql:
-      cmd: select * from users;
+      cmd: select * from core_users;
       will output: |
         podman-compose version: 1.0.6
         ['podman', '--version', '']
         using podman version: 4.4.4
-        podman exec --interactive --tty --env POSTGRES_USER=postgres_user --env POSTGRES_PASSWORD=postgres_password --env POSTGRES_DB=postgres_db src_postgres_1 psql -U postgres_user postgres_db -c select * from users;
+        podman exec --interactive --tty --env POSTGRES_USER=postgres_user --env POSTGRES_PASSWORD=postgres_password --env POSTGRES_DB=postgres_db src_postgres_1 psql -U postgres_user postgres_db -c select * from core_users;
          id | firstname | lastname | score | available | age
         ----+-----------+----------+-------+-----------+-----
          10 | Thomas    | Beecham  |    99 | t         |  18
