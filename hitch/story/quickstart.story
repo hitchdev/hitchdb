@@ -23,7 +23,7 @@ Quickstart:
           11:
             age: 19
             firstname: Jane
-            available: no
+            available:
             lastname: Beecham
             score: 55
             
@@ -151,7 +151,7 @@ Quickstart:
         INSERT INTO core_users (id, firstname, lastname, score, available, age)                                                                                         
         VALUES                                                                                                                                                          
             (10, 'Thomas', 'Beecham', 99, true, 18),                                                                                                                    
-            (11, 'Jane', 'Beecham', 55, false, 19);
+            (11, 'Jane', 'Beecham', 55, null, 19);
 
   - run sql file:
       filename: fixture.sql
@@ -166,7 +166,7 @@ Quickstart:
          id | firstname | lastname | score | available | age
         ----+-----------+----------+-------+-----------+-----
          10 | Thomas    | Beecham  |    99 | t         |  18
-         11 | Jane      | Beecham  |    55 | f         |  19
+         11 | Jane      | Beecham  |    55 |           |  19
         (2 rows)
 
         exit code: 0

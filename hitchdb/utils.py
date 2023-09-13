@@ -34,9 +34,14 @@ def sqlformat(scalar):
 
     >>> sqlformat(False)
     'false'
+    
+    >>> sqlformat(None)
+    'null'
     """
     if isinstance(scalar, str):
         return f"'{scalar}'"
+    elif scalar is None:
+        return "null"
     elif isinstance(scalar, bool):
         return "true" if scalar else "false"
     elif isinstance(scalar, int):

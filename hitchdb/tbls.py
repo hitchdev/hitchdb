@@ -1,4 +1,4 @@
-from strictyaml import Map, MapPattern, Int, Bool, Str, Float, Optional
+from strictyaml import Map, MapPattern, Int, EmptyNone, Bool, Str, Float, Optional
 
 
 class PrimaryKey:
@@ -46,20 +46,20 @@ class Table:
         )
 
     def _column_schema(self, column):
-        if column["type"].startswith("varchar"):
+        if column["type"].startswith("varchar") or column["type"] == "text":
             return Str()
-        elif column["type"] in ("text", "uuid", "inet", "jsonb"):
-            return Str()
+        elif column["type"] in ("uuid", "inet", "jsonb"):
+            return EmptyNone() | Str()
         elif column["type"] in ("double precision"):
-            return Float()
+            return EmptyNone() | Float()
         elif column["type"].startswith("numeric"):
-            return Float()
+            return EmptyNone() | Float()
         elif column["type"] in ("integer", "bigint", "smallint"):
-            return Int()
+            return EmptyNone() | Int()
         elif column["type"] == "boolean":
-            return Bool()
+            return EmptyNone() | Bool()
         elif column["type"] in ("timestamp with time zone", "date", "interval"):
-            return Str()
+            return EmptyNone() | Str()
         else:
             raise NotImplementedError(column["type"])
 
