@@ -4,7 +4,7 @@ from strictyaml import Map, MapPattern, Int, EmptyNone, Bool, Str, Float, Option
 class PrimaryKey:
     def __init__(self, column_name, column_type):
         self.column_name = column_name
-        self.column_type = column_type 
+        self.column_type = column_type
 
 
 class Table:

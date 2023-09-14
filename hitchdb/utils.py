@@ -34,7 +34,7 @@ def sqlformat(scalar):
 
     >>> sqlformat(False)
     'false'
-    
+
     >>> sqlformat(None)
     'null'
     """
