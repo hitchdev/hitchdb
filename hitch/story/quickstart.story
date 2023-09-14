@@ -24,7 +24,7 @@ Quickstart:
             age: 19
             firstname: Jane
             available:
-            lastname: Beecham
+            lastname: O'Connor
             score: 55
             
   steps:
@@ -151,7 +151,7 @@ Quickstart:
         INSERT INTO core_users (id, firstname, lastname, score, available, age)                                                                                         
         VALUES                                                                                                                                                          
             (10, 'Thomas', 'Beecham', 99, true, 18),                                                                                                                    
-            (11, 'Jane', 'Beecham', 55, null, 19);
+            (11, 'Jane', 'O''Con%nor', 55, null, 19);
 
   - run sql file:
       filename: fixture.sql
@@ -163,10 +163,10 @@ Quickstart:
         ['podman', '--version', '']
         using podman version: 4.4.4
         podman exec --interactive --tty --env POSTGRES_USER=postgres_user --env POSTGRES_PASSWORD=postgres_password --env POSTGRES_DB=postgres_db src_postgres_1 psql -U postgres_user postgres_db -c select * from core_users;
-         id | firstname | lastname | score | available | age
-        ----+-----------+----------+-------+-----------+-----
-         10 | Thomas    | Beecham  |    99 | t         |  18
-         11 | Jane      | Beecham  |    55 |           |  19
+         id | firstname | lastname  | score | available | age
+        ----+-----------+-----------+-------+-----------+-----
+         10 | Thomas    | Beecham   |    99 | t         |  18
+         11 | Jane      | O'Con%nor |    55 |           |  19
         (2 rows)
 
         exit code: 0

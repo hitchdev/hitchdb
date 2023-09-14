@@ -39,7 +39,7 @@ def sqlformat(scalar):
     'null'
     """
     if isinstance(scalar, str):
-        return f"'{scalar}'"
+        return "'{}'".format(sqlescape(scalar))
     elif scalar is None:
         return "null"
     elif isinstance(scalar, bool):
@@ -66,15 +66,6 @@ def sqlescape(sql):
         sql.maketrans(
             {
                 "'": "''",
-                "\0": "\\0",
-                "\n": "\\n",
-                '"': "",
-                "\x09": "\\t",
-                "\x1a": "\\z",
-                "\x08": "\\b",
-                "\r": "\\r",
-                "\\": "\\\\",
-                "%": "\\%",
             }
         )
     )
