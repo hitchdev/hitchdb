@@ -1,4 +1,6 @@
 from strictyaml import Map, MapPattern, Int, EmptyNone, Bool, Str, Float, Optional
+from pathlib import Path
+import json
 
 
 class PrimaryKey:
@@ -81,7 +83,16 @@ class Table:
 
 
 class TBLSConfig:
-    def __init__(self, tbls_json: dict):
+    def __init__(self, tbls_json_path: dict):
+        tbls_json_path = Path(tbls_json_path)
+
+        assert tbls_json_path.exists()
+        tbls_json = json.loads(tbls_json_path.read_text())
+        assert tbls_json["driver"]["name"] == "postgres", (
+            "HitchDb currently only works for postgres.\n"
+            "Raise a ticket for mysql/mariadb/"
+            "microsoft sql server/sqllite/bigquery/redshift/dynamodb"
+        )
         self._tj = tbls_json
 
         for table in tbls_json["tables"]:
