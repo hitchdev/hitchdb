@@ -42,15 +42,10 @@ class Engine(BaseEngine):
             MapPattern(Str(), Str()),
             inherit_via=GivenProperty.OVERRIDE,
         ),
-        html=GivenProperty(
-            MapPattern(Str(), Str()),
-            inherit_via=GivenProperty.OVERRIDE,
-        ),
     )
 
     info_definition = InfoDefinition(
         status=InfoProperty(schema=Enum(["experimental", "stable"])),
-        category=InfoProperty(schema=Enum(["behavior", "runner", "inheritance", "parameterization", "documentation",])),
         docs=InfoProperty(schema=Str()),
     )
 

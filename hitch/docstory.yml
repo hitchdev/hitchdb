@@ -3,6 +3,7 @@ story: |
   ---
   title: {{ name }}
   ---
+  # {{ name }}
   {% if "status" in info %}
   {{ info["status"].documentation() }}
   {% endif %}
@@ -10,7 +11,7 @@ story: |
 
   {{ about }}
 
-  # Code Example
+  ## Code Example
 
   {% for name, property in given.items() %}
   {{ property.documentation() }}
@@ -34,7 +35,7 @@ story: |
   !!! note "Executable specification"
 
       Documentation automatically generated from 
-      <a href="https://github.com/hitchdev/hitchstory/blob/master/hitch/story/{{ filename.name }}">{{ filename.name }}
+      <a href="https://github.com/hitchdev/hitchdb/blob/master/hitch/story/{{ filename.name }}">{{ filename.name }}
       storytests.</a>
 
   {% endif %}
@@ -53,11 +54,11 @@ given:
     ```{% if filename.endswith("py") %}python{% else %}yaml{% endif %}
     {{ contents }}```
     {%- endfor %}
-  setup: |
-    With code:
+  postgres: |
+    With postgres database set up with:
 
-    ```python
-    {{ setup }}
+    ```sql
+    {{ postgres }}
     ```
 variation: |
   ## {{ name }}
@@ -72,36 +73,25 @@ variation: |
   {{ step.documentation() }}
   {% endfor %}
 steps:
-  file was created with: |
-    File {{ filename }} should now contain:
-
-    ```
-    {{ contents }}
-    ```
-  example story unchanged: Then the example story will be unchanged.
-  
-  file contents will be: |
-    File {{ filename }} should now contain:
+  run sql file: |
+    Then the file {{ filename }} is run.
+  run tbls: |
+    Running tbls on this database will output:
     
+    ```json
+    {{ will_output }}
     ```
-    {{ contents }}
-    ```
-  
-  output is: |
-    The code will output:
-    ```
-    {{ expected_contents }}
-    ```
-  
-  tear down was run: Then teardown is run.
-
-  form filled: |
-    Then the form is filled with:
+  sql: |
+    Then running:
     
-    {% for name, value in kwargs.items() %}
-    * {{ name }}: {{ value }}
-    {% endfor %}
-
+    ```sql
+    {{ cmd }}
+    ```
+    
+    Will output:
+    ```
+    {{ will_output }}
+    ```
   run: |
     {%- if in_interpreter %}
     ```python
@@ -134,14 +124,3 @@ steps:
     {% endif %}
     {% endif %}
     {% endif %}
-
-  pytest: |
-    `{% if env %}{% for key, value in env.items() %}{{ key }}={{ value }} {% endfor %}{% endif %}pytest {{ args }}`
-    
-    Outputs:
-    ```
-    {{ will_output }}
-    ```
-
-  run python: |
-    
