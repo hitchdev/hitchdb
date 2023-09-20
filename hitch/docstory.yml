@@ -76,7 +76,7 @@ steps:
   run sql file: |
     Then the file {{ filename }} is run.
   run tbls: |
-    Running tbls on this database will output:
+    Running [tbls](https://github.com/k1LoW/tbls) on this database in JSON mode will output:
     
     ```json
     {{ will_output }}
