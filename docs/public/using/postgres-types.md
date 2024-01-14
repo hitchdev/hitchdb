@@ -64,7 +64,7 @@ items:
 
 
 
-Running tbls on this database will output:
+Running [tbls](https://github.com/k1LoW/tbls) on this database in JSON mode will output:
 
 ```json
 {
